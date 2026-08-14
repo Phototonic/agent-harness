@@ -7,7 +7,7 @@
 
 A self-contained, runtime-agnostic scaffold for projects that use coding agents. Copy it into a repository and every agent gets a stable place to read instructions, plan risky work, and record what it changed — instead of depending on chat-only context that later sessions may not have.
 
-[What it does](#what-it-does) • [Quick start](#quick-start) • [How agents use it](#how-agents-use-it) • [Agent runtime](#agent-runtime) • [Documentation](#documentation) • [License](#license)
+[What it does](#what-it-does) • [Install with an agent](#install-with-an-agent) • [Manual quick start](#manual-quick-start) • [How agents use it](#how-agents-use-it) • [Agent runtime](#agent-runtime) • [Documentation](#documentation) • [License](#license)
 
 ---
 
@@ -24,7 +24,30 @@ A self-contained, runtime-agnostic scaffold for projects that use coding agents.
 
 ---
 
-## Quick start
+## Install with an agent (recommended)
+
+Strongly recommended: let a coding agent install this for you. The bootstrap involves copying the template, choosing a project name, deciding what goes into the docs, picking a license, and running the init scripts — an agent reads the full guide, asks you the setup questions once, and applies everything consistently.
+
+Paste this prompt into Claude Code, AmpCode, Cursor, opencode, or any agent:
+
+```text
+Install and configure the agent-harness template for a new project by following the instructions here:
+https://raw.githubusercontent.com/Phototonic/agent-harness/main/docs/AGENT_QUICKSTART.md
+
+Ask me the setup questions the guide lists (project name, license, docs, and so on), apply my answers, run the scripts, and verify before you finish.
+```
+
+**For LLM agents** — fetch the full guide and follow it step by step:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Phototonic/agent-harness/main/docs/AGENT_QUICKSTART.md
+```
+
+The guide covers: bootstrap methods (copy, clone, or GitHub template), project-naming rules, the setup interview (project name, license, doc depth, quality gates, git history), running `make init` / `make new-plan` / `make new-history` / `make validate`, applying your answers to the README, LICENSE, and seeds, and verifying the scaffold. Don't summarise it — read it end to end and execute. The same guide ships in the repo at [docs/AGENT_QUICKSTART.md](docs/AGENT_QUICKSTART.md); both it and this section are removed by `make init` once you scaffold.
+
+---
+
+## Manual quick start
 
 Bootstrap a new project by copying this directory into its root, cloning it, or using GitHub's **Use this template** action:
 
@@ -32,13 +55,15 @@ Bootstrap a new project by copying this directory into its root, cloning it, or 
 cp -r /path/to/agent-harness/. /path/to/new-project/
 ```
 
-Then initialise the project name and read the two seeds:
+Then initialise the project name (and the license holder) and read the two seeds:
 
 ```bash
-make init PROJECT=my-project   # or: scripts/init-project.sh my-project
+make init PROJECT=my-project OWNER="Your Name"   # or: scripts/init-project.sh my-project "Your Name"
 ```
 
 Replace the seed content in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and fill in the quality gates in [docs/QUALITY_AND_VALIDATION.md](docs/QUALITY_AND_VALIDATION.md) before substantial work begins.
+
+`make init` also makes the scaffold fully neutral: it removes the bootstrap-only **Install with an agent** section from this README, removes `docs/AGENT_QUICKSTART.md`, and sets the `LICENSE` copyright holder — from `OWNER` when given, otherwise a `<YOUR NAME>` placeholder you fill in. Re-running it is safe.
 
 ---
 
