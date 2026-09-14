@@ -52,4 +52,4 @@ Audit the harness for needed updates given its general-purpose intent, then impl
 
 ## Open Questions
 
-- Maintainer release step pending: `git tag v0.1.0 && git push origin v0.1.0` after committing — pinned bootstrap URLs 404 until then (same pattern as the prior release's noted gap).
+- ~~Maintainer release step pending~~ — resolved 2026-09-15: committed (`4a100de` + shellcheck SC2295 quoting fix `e46a20a`), tagged `v0.1.0`, pushed; CI green on the tagged commit; pinned quickstart URL returns 200.

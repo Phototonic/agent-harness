@@ -47,6 +47,7 @@ The repository is a reusable agent-harness template. The authoritative source pl
 - 2026-09-14 - Created execution plan; Phase 1 is in flight while the approved safety and portability changes are implemented.
 - 2026-09-14 - Phases 1-3 landed (script safety core, installer, tests + CI); oracle review of the safety core accepted findings hardening (dedicated `.agent-harness-template` marker replacing textual inference, mktemp temp files, symlink rejection + exclusive creation) and rejected installer TOCTOU hardening as disproportionate. Docs phase landed after behavior freeze.
 - 2026-09-14 - Phase 5 final verification passed (14/14 template-mode, 5/5 scaffold-mode, post-init and existing-repo simulations clean); history record `docs/histories/2026-09/harness-safety-portability.md` created; plan moved to completed. Pending maintainer step: tag `v0.1.0` after commit so pinned bootstrap URLs resolve.
+- 2026-09-15 - Released: committed, tagged `v0.1.0`, pushed. First CI run failed on runner-provided shellcheck (17 SC2295 quoting findings, info-level); fixed in `e46a20a`, CI green, tag re-pointed to the green commit; pinned URL verified 200.
 
 ## Decision Log
 
