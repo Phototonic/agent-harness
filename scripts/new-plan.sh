@@ -51,12 +51,12 @@ if path_has_symlink_component "$destination_relative"; then
 fi
 
 if [[ -e $destination || -L $destination ]]; then
-  printf 'Destination already exists: %s\n' "${destination#$root_dir/}" >&2
+  printf 'Destination already exists: %s\n' "${destination#"$root_dir"/}" >&2
   exit 1
 fi
 
 if ! (set -o noclobber; cat "$root_dir/.plans/templates/execution-plan.md" > "$destination"); then
-  printf 'Destination already exists: %s\n' "${destination#$root_dir/}" >&2
+  printf 'Destination already exists: %s\n' "${destination#"$root_dir"/}" >&2
   exit 1
 fi
-printf '%s\n' "${destination#$root_dir/}"
+printf '%s\n' "${destination#"$root_dir"/}"

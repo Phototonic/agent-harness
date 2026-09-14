@@ -80,9 +80,9 @@ replace_token() {
 
   if grep -q "$old" "$file"; then
     replace_in_place "s/$old/$new/g" "$file"
-    printf 'Updated %s\n' "${file#$root_dir/}"
+    printf 'Updated %s\n' "${file#"$root_dir"/}"
   else
-    printf 'No %s token in %s; nothing to change.\n' "$old" "${file#$root_dir/}"
+    printf 'No %s token in %s; nothing to change.\n' "$old" "${file#"$root_dir"/}"
   fi
 }
 
@@ -99,15 +99,15 @@ set_license_holder() {
 
   copyright_line=$(grep '^Copyright (c) 20[0-9][0-9] ' "$file" | head -1 || true)
   if [[ -z $copyright_line ]]; then
-    printf 'No copyright line in %s; nothing to change.\n' "${file#$root_dir/}"
+    printf 'No copyright line in %s; nothing to change.\n' "${file#"$root_dir"/}"
     return
   fi
   if [[ $copyright_line == *" $holder" ]]; then
-    printf 'License holder already set in %s; nothing to change.\n' "${file#$root_dir/}"
+    printf 'License holder already set in %s; nothing to change.\n' "${file#"$root_dir"/}"
     return
   fi
   replace_in_place "s/^Copyright (c) \(20[0-9][0-9]\) .*$/Copyright (c) \\1 $holder_escaped/" "$file"
-  printf 'Updated %s\n' "${file#$root_dir/}"
+  printf 'Updated %s\n' "${file#"$root_dir"/}"
 }
 
 if [[ -n $owner ]]; then
@@ -143,14 +143,14 @@ remove_install_section() {
       rm -f "$tmp"
       return 1
     fi
-    printf 'Removed bootstrap-only install section from %s\n' "${file#$root_dir/}"
+    printf 'Removed bootstrap-only install section from %s\n' "${file#"$root_dir"/}"
   else
-    printf 'No bootstrap-only install section in %s; nothing to change.\n' "${file#$root_dir/}"
+    printf 'No bootstrap-only install section in %s; nothing to change.\n' "${file#"$root_dir"/}"
   fi
 
   if grep -q '\[Install with an agent\]' "$file"; then
     replace_in_place 's/ • \[Install with an agent\](#install-with-an-agent)//; s/\[Install with an agent\](#install-with-an-agent) • //' "$file"
-    printf 'Removed install link from the TOC in %s\n' "${file#$root_dir/}"
+    printf 'Removed install link from the TOC in %s\n' "${file#"$root_dir"/}"
   fi
 }
 
@@ -158,17 +158,17 @@ remove_install_section "$root_dir/README.md"
 
 if [[ -f $quickstart_doc ]]; then
   rm -f "$quickstart_doc"
-  printf 'Removed bootstrap-only %s\n' "${quickstart_doc#$root_dir/}"
+  printf 'Removed bootstrap-only %s\n' "${quickstart_doc#"$root_dir"/}"
 fi
 
 for bundled_history in "${BUNDLED_HISTORY_RECORDS[@]}"; do
   history_record="$root_dir/$bundled_history"
   if [[ -f $history_record ]]; then
     rm -f "$history_record"
-    printf 'Removed template history record %s\n' "${history_record#$root_dir/}"
+    printf 'Removed template history record %s\n' "${history_record#"$root_dir"/}"
   fi
   rmdir "${history_record%/*}" 2>/dev/null || true
 done
 
 rm -f "$marker_file"
-printf 'Removed template marker %s\n' "${marker_file#$root_dir/}"
+printf 'Removed template marker %s\n' "${marker_file#"$root_dir"/}"
