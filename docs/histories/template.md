@@ -1,5 +1,7 @@
 # History Record
 
+> Never record secrets, credentials, tokens, or private data in a history entry.
+
 ## Date
 
 > ⚠️ REPLACE: YYYY-MM-DD

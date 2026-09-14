@@ -8,7 +8,7 @@ Start every task by reading this file.
 
 - Simple, small changes: make them carefully and validate them.
 - Complex, risky, multi-session, or architectural work: write an execution plan first in `.plans/`; see [docs/PLANS_GUIDE.md](docs/PLANS_GUIDE.md).
-- After any agent-made change: create a history entry; see [docs/HISTORY_GUIDE.md](docs/HISTORY_GUIDE.md).
+- History entries are mandatory for decision-bearing, risky, multi-file, or user-visible changes. For other small, low-risk changes, a one-line entry is optional.
 - Validation is mandatory before claiming work is done; see [docs/QUALITY_AND_VALIDATION.md](docs/QUALITY_AND_VALIDATION.md).
 
 ## Read As Needed

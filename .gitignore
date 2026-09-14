@@ -1,27 +1,4 @@
-# Dependencies / build artifacts
-node_modules/
-dist/
-build/
-*.tsbuildinfo
-
-# Environment & secrets (never commit keys)
-.env
-.env.*
-!.env.example
-
-# Editor / OS junk
+# Add stack-specific ignore rules for your project below.
 .DS_Store
 *.swp
 *~
-.idea/
-.vscode/
-*.code-workspace
-
-# Logs
-*.log
-npm-debug.log*
-
-# Compiled / generated
-coverage/
-*.pyc
-__pycache__/

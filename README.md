@@ -1,13 +1,13 @@
 # Agent Harness Template
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-3A3A3A?style=flat&labelColor=3A3A3A&color=6C9E4F)](LICENSE)
-[![PRs welcome](https://img.shields.io/badge/PRs-welcome-3A3A3A?style=flat&labelColor=3A3A3A&color=E8A33D)](issues)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-3A3A3A?style=flat&labelColor=3A3A3A&color=E8A33D)](https://github.com/Phototonic/agent-harness/issues)
 
 **Repo-local instructions, plans, and history that make coding agents more reliable.**
 
 A self-contained, runtime-agnostic scaffold for projects that use coding agents. Copy it into a repository and every agent gets a stable place to read instructions, plan risky work, and record what it changed — instead of depending on chat-only context that later sessions may not have.
 
-[What it does](#what-it-does) • [Install with an agent](#install-with-an-agent) • [Manual quick start](#manual-quick-start) • [How agents use it](#how-agents-use-it) • [Agent runtime](#agent-runtime) • [Documentation](#documentation) • [License](#license)
+[What it does](#what-it-does) • [Install with an agent](#install-with-an-agent) • [Manual quick start](#manual-quick-start) • [Upgrades](#upgrades) • [How agents use it](#how-agents-use-it) • [Agent runtime](#agent-runtime) • [Documentation](#documentation) • [License](#license)
 
 ---
 
@@ -20,7 +20,7 @@ A self-contained, runtime-agnostic scaffold for projects that use coding agents.
 | **History records** | One file per change: what changed, design intent, how it was verified. |
 | **Validation guidance** | Stack-specific quality gates plus an agent checklist to pass before claiming done. |
 | **Runtime-agnostic** | No assumptions about agent tool, model provider, or runtime. |
-| **Zero dependencies** | Plain bash scripts and a Makefile — no external CLI, no install step. |
+| **Requirements** | Bash ≥ 3.2, Make, and standard host utilities (`grep`, `sed`, `awk`, `date`, `cp`, `mv`, `rm`, `mktemp`); GNU and BSD userlands both work; nothing to install. |
 
 ---
 
@@ -32,7 +32,7 @@ Paste this prompt into Claude Code, AmpCode, Cursor, opencode, or any agent:
 
 ```text
 Install and configure the agent-harness template for a new project by following the instructions here:
-https://raw.githubusercontent.com/Phototonic/agent-harness/main/docs/AGENT_QUICKSTART.md
+https://raw.githubusercontent.com/Phototonic/agent-harness/v0.1.0/docs/AGENT_QUICKSTART.md
 
 Ask me the setup questions the guide lists (project name, license, docs, and so on), apply my answers, run the scripts, and verify before you finish.
 ```
@@ -40,22 +40,34 @@ Ask me the setup questions the guide lists (project name, license, docs, and so 
 **For LLM agents** — fetch the full guide and follow it step by step:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Phototonic/agent-harness/main/docs/AGENT_QUICKSTART.md
+curl -fsSL https://raw.githubusercontent.com/Phototonic/agent-harness/v0.1.0/docs/AGENT_QUICKSTART.md
 ```
 
 The guide covers: bootstrap methods (copy, clone, or GitHub template), project-naming rules, the setup interview (project name, license, doc depth, quality gates, git history), running `make init` / `make new-plan` / `make new-history` / `make validate`, applying your answers to the README, LICENSE, and seeds, and verifying the scaffold. Don't summarise it — read it end to end and execute. The same guide ships in the repo at [docs/AGENT_QUICKSTART.md](docs/AGENT_QUICKSTART.md); both it and this section are removed by `make init` once you scaffold.
+
+The `main` branch is unstable; prompts should use the latest tagged release. This example is pinned to `v0.1.0`.
 
 ---
 
 ## Manual quick start
 
-Bootstrap a new project by copying this directory into its root, cloning it, or using GitHub's **Use this template** action:
+### Fresh repository
+
+Bootstrap a new project by cloning this template, using GitHub's **Use this template** action, or copying its contents into an empty directory. When copying, include hidden files and directories; the dotfiles are part of the scaffold. This flow is for a fresh repository only.
+
+### Existing repository
+
+Do not copy the template over an existing working tree. From this checkout, install only the harness-owned manifest into the target:
 
 ```bash
-cp -r /path/to/agent-harness/. /path/to/new-project/
+scripts/install-existing.sh /path/to/existing-project
 ```
 
-Then initialise the project name (and the license holder) and read the two seeds:
+The installer leaves differing files in place and reports collisions. It generates `<code>agent&#45;harness.mk</code>` inside the target; add `<code>include agent&#45;harness.mk</code>` to the target's Makefile as the one manual integration step — resolve any reported collisions first. It never replaces the target's README, LICENSE, Makefile, `.gitignore`, or `.git` directory.
+
+### Initialise a fresh repository
+
+Initialise the project name (and the license holder) and read the two seeds:
 
 ```bash
 make init PROJECT=my-project OWNER="Your Name"   # or: scripts/init-project.sh my-project "Your Name"
@@ -63,7 +75,13 @@ make init PROJECT=my-project OWNER="Your Name"   # or: scripts/init-project.sh m
 
 Replace the seed content in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and fill in the quality gates in [docs/QUALITY_AND_VALIDATION.md](docs/QUALITY_AND_VALIDATION.md) before substantial work begins.
 
-`make init` also makes the scaffold fully neutral: it removes the bootstrap-only **Install with an agent** section from this README, removes `docs/AGENT_QUICKSTART.md`, and sets the `LICENSE` copyright holder — from `OWNER` when given, otherwise a `<YOUR NAME>` placeholder you fill in. Re-running it is safe.
+`make init` is a partial bootstrap for fresh template checkouts. It replaces the template name in `README.md` and `AGENTS.md`, removes the bootstrap-only **Install with an agent** section from this README and `docs/AGENT_QUICKSTART.md`, and sets the `LICENSE` copyright holder — from `OWNER` when given, otherwise a `<YOUR NAME>` placeholder you fill in. The title, tagline, and other README prose remain yours to edit; the agent-assisted flow applies the full setup interview.
+
+Re-running it is safe: cleanup uses an explicit manifest for bundled history records rather than deleting whole history directories, and a template-marker guard makes a second run a true no-op. User history records and the history template are preserved.
+
+## Upgrades
+
+Upgrades are manual: check the upstream template's releases wherever you copied this harness from, compare your `HARNESS_VERSION` with the release version, diff the harness-owned files, and apply the changes selectively. No migration scripts are shipped.
 
 ---
 
@@ -82,9 +100,7 @@ Repository-local knowledge beats private context: decisions that affect future w
 
 ## Agent runtime
 
-This template is runtime-agnostic: it makes no assumptions about which agent tool, model provider, or runtime you use, and ships no runtime configuration. Keep authentication, provider, and model settings out of the repository — they are environment-specific, not project knowledge. Document project-specific runtime notes in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-
-As an example, with [opencode](https://opencode.ai), global authentication and provider configuration already apply to every repository, so a project scaffolded from this template needs no runtime configuration at all.
+This template is runtime-agnostic. Any runtime that reads `AGENTS.md` at session start, or can be configured or prompted to do so through its rules or context mechanism, works with it. If a runtime has no such mechanism, point it at `AGENTS.md` manually at the start of a session. No provider configuration is shipped; keep authentication, provider, and model settings out of the repository because they are environment-specific, not project knowledge. Document project-specific runtime notes in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ---
 
@@ -104,7 +120,8 @@ As an example, with [opencode](https://opencode.ai), global authentication and p
 ```text
 .
 ├── AGENTS.md               # entry point every agent reads
-├── Makefile                # init / new-plan / new-history / validate / help
+├── HARNESS_VERSION         # installed harness release marker
+├── Makefile                # init / new-plan / new-history / validate / validate-project / test / help
 ├── .plans/                 # execution plans
 │   ├── active/             # plans currently in progress
 │   ├── completed/          # finished plans
@@ -112,8 +129,11 @@ As an example, with [opencode](https://opencode.ai), global authentication and p
 ├── docs/
 │   ├── histories/          # one record per agent change
 │   └── *.md                # guides and seeds (see table above)
+├── tests/                  # dependency-free regression tests
 └── scripts/                # plain-bash helpers behind the Makefile
 ```
+
+The installer generates `<code>agent&#45;harness.mk</code>` inside existing targets; it is not shipped at this repository's root.
 
 ---
 

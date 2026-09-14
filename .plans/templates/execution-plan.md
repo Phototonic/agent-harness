@@ -1,9 +1,9 @@
 ---
-Title: > ⚠️ REPLACE: concise outcome-focused title
-Status: draft
-Created: > ⚠️ REPLACE: YYYY-MM-DD
-Updated: > ⚠️ REPLACE: YYYY-MM-DD
-Owner: > ⚠️ REPLACE: person or agent
+Title: "> ⚠️ REPLACE: concise outcome-focused title"
+Status: "draft"
+Created: "> ⚠️ REPLACE: YYYY-MM-DD"
+Updated: "> ⚠️ REPLACE: YYYY-MM-DD"
+Owner: "> ⚠️ REPLACE: person or agent"
 ---
 
 ## Goal
